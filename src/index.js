@@ -139,4 +139,38 @@ app.get('/statement/date', verifyIfExistsAcountCPF, (request, response) => {
     return response.json(customer.statement);
 });
 
+app.put('/account', verifyIfExistsAcountCPF, (request, response) => {
+    // processo para alteração no nome, que este caso, foi o único item permitido
+    const { name } = request.body;
+    const { customer } = request;
+
+    customer.name = name;
+
+    return response.status(201).send();
+});
+
+app.get('/account', verifyIfExistsAcountCPF, (request, response) => {
+    const { customer } = request;
+
+    return response.json(customer);
+});
+
+app.delete('/account', verifyIfExistsAcountCPF, (request, response) => {
+    const { customer } = request;
+
+    // splice
+    customers.splice(customer, 1);
+
+    return response.status(200).json(customers);
+
+});
+//  verificar o saldo da conta
+app.get('/balance', verifyIfExistsAcountCPF, (request, response) => {
+    const { customer } = request;
+
+    const balance = getBalance(customer.statement);
+
+    return response.json(balance);
+});
+
 app.listen(2000);
